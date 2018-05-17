@@ -122,8 +122,8 @@ void drawAstroids(){
      //populates the PVector astroids[] and PVector astroDirect[]
      for(int a =0; a < astroNums; a++){ 
        astroids[a] = new PVector(0, 0, 0); // places random generated numbers into PVector
-       astroids[a].x = random(1000); //generates random x value for astroid starting point
-       astroids[a].y = random(800); //generates random y value for astroid starting point
+       astroids[a].x = random(width); //generates random x value for astroid starting point
+       astroids[a].y = random(height); //generates random y value for astroid starting point
        
        fill(209); // colour of astroid 
        ellipse(astroids[a].x, astroids[a].y, astroidSize, astroidSize); //prints the astroid on the screen
