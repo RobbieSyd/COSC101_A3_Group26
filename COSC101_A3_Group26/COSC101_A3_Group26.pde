@@ -12,19 +12,15 @@
 
 **************************************************************/
 
-float positionX = 0;
-float positionY = 0;
-float mouseXX;
-float mouseYY;
+float astroidSize = 70; 
 float rotated = 0.0;
-
 int initalised = 0; 
 PShape ship; // don't have to use pshape - can use image
 int astroNums=20;
 PVector[] astroids = new PVector[astroNums];
-PVector[] astroDirect = new PVector[astroNums];
-float speed = 0;
-float maxSpeed = 4;
+PVector[] astroDirect = new PVector[astroNums]; 
+float speed = 0; 
+float maxSpeed =4; 
 float radians=radians(270); //if your ship is facing up (like in atari game)
 PVector shipCoord;
 PVector direction;
@@ -38,10 +34,12 @@ boolean alive=true;
 
 void setup(){
   size(1000,800);
+  shipCoord = new PVector(width/2, height/2);
+  direction = new PVector(0,0); 
+  ship();// Creates PShape of ship 
+  drawAstroids();
+  initalised = 1;// sets initalised variable to 1. 
   
-  //initialise pvtecotrs 
-  //random astroid initial positions and directions;
-  //initialise shapes if needed
 }
 
 /**************************************************************
@@ -59,46 +57,57 @@ void setup(){
 
 void moveShip(){
   
-  //this function should update if keys are pressed down 
-     // - this creates smooth movement
-  //update rotation,speed and update current location
-  //you should also check to make sure your ship is not outside of the window
   if(sUP){
+    speed += 0.1; 
+    direction.x = cos(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
+    direction.y = sin(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
   }
+    
   if(sDOWN){
-  
+    speed -= 0.1;
+    direction.x = cos(rotated+radians(270))*(speed); //<>//
+    direction.y = sin(rotated+radians(270))*(speed); 
+     
   }
+  
   if(sRIGHT){
     rotated+=0.05;
   }
   if(sLEFT){
     rotated-=0.05;
   }
-}
+  
+  //Next two if statements keep speed inside max speed limits 
+   if (speed>= maxSpeed){ 
+      speed = maxSpeed; }
+   if (speed <= -1*(maxSpeed)){ 
+      speed = -1*(maxSpeed); }
+
+   shipCoord.add(direction); //moves the ship even if a key has not been pushed. 
+ 
+   if (shipCoord.x >=width) { //brings the ship back if it goes off screen. 
+         shipCoord.x -= width; }
+   if (shipCoord.x <= 0){//brings the ship back if it goes off screen. 
+         shipCoord.x += width;}
+   if (shipCoord.y >= height){//brings the ship back if it goes off screen. 
+         shipCoord.y -= height;}
+   if (shipCoord.y <= 0){//brings the ship back if it goes off screen. 
+         shipCoord.y += height;} 
+  }
 
 void ship() {
-  //side engines
-  fill(255, 0, 0);
-  stroke(255, 0, 0);
-  triangle(positionX, positionY-50, positionX+30, positionY, positionX-30, positionY);
-  //main body
-  fill(150);
-  stroke(150);
-  triangle(positionX, positionY-80, positionX+20, positionY, positionX-20, positionY);
-  //center engine
-  fill(255, 0, 0);
-  stroke(255, 0, 0);
-  triangle(positionX, positionY-25, positionX+10, positionY, positionX-10, positionY);
-  //outside of engine
-  fill(100);
-  stroke(100);
-  triangle(positionX, positionY-25, positionX+3, positionY, positionX+-3, positionY);
-  //window
-  fill(0);
-  stroke(0);
-  triangle(positionX, positionY-75, positionX+3, positionY-60, positionX-3, positionY-60);
-  if (rotated>=TAU) rotated=0;
-  if (rotated<0) rotated=TAU;
+  
+  ship = createShape();
+  ship.beginShape();
+  ship.noFill();
+  ship.stroke(255);
+  ship.strokeWeight(1);
+  ship.vertex(15,0);
+  ship.vertex(0,30);
+  ship.vertex(15,20);
+  ship.vertex(30,30);
+  //ship.translate(-15,-15);
+  ship.endShape(CLOSE); 
   
 }
 
@@ -112,81 +121,64 @@ void drawAstroids(){
   if (initalised == 0){ //initalised variable added to ensure that the PVectors arrays are only populated once.  
      //populates the PVector astroids[] and PVector astroDirect[]
      for(int a =0; a < astroNums; a++){ 
-  
-       float rx = random(1000); //generates random x value for astroid starting point
-       float ry = random(800); //generates random y value for astroid starting point
-       astroids[a] = new PVector(rx, ry); // places random generated numbers into PVector
-       fill(209); // colour of astroid 
-       ellipse(astroids[a].x, astroids[a].y, 50, 50); //prints the astroid on the screen //<>//
+       astroids[a] = new PVector(0, 0, 0); // places random generated numbers into PVector
+       astroids[a].x = random(1000); //generates random x value for astroid starting point
+       astroids[a].y = random(800); //generates random y value for astroid starting point
        
-       float dx = random(-2,2); //generates random x value for astroid direction
-       float dy = random(-2,2); //generates random y value for astroid direction
-       astroDirect[a] = new PVector(dx, dy); // places random generated numbers into PVector 
+       fill(209); // colour of astroid 
+       ellipse(astroids[a].x, astroids[a].y, astroidSize, astroidSize); //prints the astroid on the screen
+       
+       astroDirect[a] = new PVector(0, 0); // places random generated numbers into PVector
+       astroDirect[a].x = random(-2,2); //generates random x value for astroid direction
+       astroDirect[a].y = random(-2,2); //generates random y value for astroid direction
+       
+       astroids[a].z = 0; // Boolean value to indicate that the astroid has not been exploded.       
      }
   } 
    else{
      // Adds the Pvectors astroids[] and astroDirect[]
-     for(int d = 0; d< astroNums; d++) {   
-       astroids[d].add(astroDirect[d]);
-       if (astroids[d].x >=1000) { //brings the astroid back if it goes off screen. 
-         astroids[d].x -= 1000; }
-       if (astroids[d].x <= 0){//brings the astroid back if it goes off screen. 
-         astroids[d].x += 1000;}
-       if (astroids[d].y >= 800){//brings the astroid back if it goes off screen. 
-         astroids[d].y -= 800;}
-       if (astroids[d].y <= 0){//brings the astroid back if it goes off screen. 
-         astroids[d].y += 800;}
+     for(int d = 0; d< astroNums; d++) {  
+       
+       if(astroids[d].z == 0){     // checks to see if astroid has exploded or not. 0 = Alive, 1 = Exploded
+       
+          astroids[d].add(astroDirect[d]);//Draws the astroid on the screen
          
+          if(astroids[d].x >=width) { //brings the astroid back if it goes off screen. 
+           astroids[d].x -= width; }
+          if(astroids[d].x <= 0){//brings the astroid back if it goes off screen. 
+           astroids[d].x += width;}
+          if(astroids[d].y >= height){//brings the astroid back if it goes off screen. 
+           astroids[d].y -= height;}
+          if(astroids[d].y <= 0){//brings the astroid back if it goes off screen. 
+           astroids[d].y += height;}
          
-       fill(209);// colour of astroid
-       ellipse(astroids[d].x, astroids[d].y , 50 , 50); //prints the astroid on the screen
-     
-     }
-     
+          fill(209);// colour of astroid
+          ellipse(astroids[d].x, astroids[d].y , astroidSize , astroidSize); //prints the astroid on the screen
+       }  
    
    }
-
-
-  //check to see if astroid is not already destroyed
-  //otherwise draw at location 
-  //initial direction and location should be randomised
-  //also make sure the astroid has not moved outside of the window
-    
+     
+   }    
 }
 
 void collisionDetection(){
-  mouseXX = mouseX - (width/2);
-  mouseYY = mouseY - (height/2)-40;
-  //Ellipse for collision detection testing
-  fill(255,0,0);
-  ellipse(100,100,100,100);  
-  //ship collision areas
-  //calculating ship collision areas
-  //side engines triangle
-  float areaOrigin1 = abs( ((positionX+30)-positionX)*((positionY)-positionY-50) - ((positionX-30)-positionX)*((positionY)-positionY-50) );
-  float area1 =    abs( ((positionX)-mouseXX)*((positionY)-mouseYY) - ((positionX+30)-mouseXX)*((positionY-50)-mouseYY) );
-  float area2 =    abs( ((positionX+30)-mouseXX)*((positionY)-mouseYY) - ((positionX-30)-mouseXX)*((positionY)-mouseYY) );
-  float area3 =    abs( ((positionX-30)-mouseXX)*((positionY-50)-mouseYY) - ((positionX)-mouseXX)*((positionY)-mouseYY) );
-  //main body triangle
-  float areaOrigin2 = abs( ((positionX+20)-positionX)*((positionY)-positionY-80) - ((positionX-20)-positionX)*((positionY)-positionY-80) );
-  float area4 =    abs( ((positionX)-mouseXX)*((positionY)-mouseYY) - ((positionX+20)-mouseXX)*((positionY-80)-mouseYY) );
-  float area5 =    abs( ((positionX+20)-mouseXX)*((positionY)-mouseYY) - ((positionX-20)-mouseXX)*((positionY)-mouseYY) );
-  float area6 =    abs( ((positionX-20)-mouseXX)*((positionY-80)-mouseYY) - ((positionX)-mouseXX)*((positionY)-mouseYY) );
-  if (area1 + area2 + area3 == areaOrigin1 || area4 + area5 + area6 == areaOrigin2){
-    fill(0,255,0);
-    ellipse(100,100,100,100);
-  }
+ 
+
 }
 
 
 void draw(){
-  background(0);
+  background(0);  
   pushMatrix();
-  translate(width/2,height/2);
+  background(0);
+  translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen. 
   rotate(rotated);
-  translate(0, 40); // offset by half the ship height to rotate around middle of the ship  
-  ship();
-  popMatrix();
+  shape(ship,-ship.width/2,-ship.height/2); //Makes the ship at the centre of the screen.
+  if(rotated >=TWO_PI) rotated = 0;
+  if(rotated<0) rotated = TWO_PI;
+  popMatrix(); 
+ 
+  
   //might be worth checking to see if you are still alive first
   moveShip();
   collisionDetection();
@@ -194,8 +186,7 @@ void draw(){
   // draw ship - call shap(..) if Pshape
   // report if game over or won
   drawAstroids();
-  // draw score
-  initalised = 1; 
+  // draw score //<>//
 }
 
 void keyPressed() {
