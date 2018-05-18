@@ -235,11 +235,10 @@ void draw() {
   translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen. 
   rotate(rotated);
   shape(ship, -ship.width/2, -ship.height/2); //Makes the ship at the centre of the screen.
-  asteroidCollisionDetection();
   if (rotated >=TWO_PI) rotated = 0;
   if (rotated<0) rotated = TWO_PI;
   popMatrix(); 
-
+  asteroidCollisionDetection();
   //might be worth checking to see if you are still alive first
   moveShip();
   // draw ship - call shap(..) if Pshape
