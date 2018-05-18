@@ -179,15 +179,18 @@ void drawAstroids() {
 }
 
 void asteroidCollisionDetection() {
-  triangle[0] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+0);
-  triangle[1] = new PVector(((shipCoord.x)-15)+7.5, ((shipCoord.y)-15)+15);
-  triangle[2] = new PVector(((shipCoord.x)-15)+0, ((shipCoord.y)-15)+30);
-  triangle[3] = new PVector(((shipCoord.x)-15)+7.5, ((shipCoord.y)-15)+25);
-  triangle[4] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+20);
-  triangle[5] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+25);
-  triangle[6] = new PVector(((shipCoord.x)-15)+30, ((shipCoord.y)-15)+30);
-  triangle[7] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+15);
-  for (int d = 0; d< astroNums; d++) {
+  triangle[0] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+0); //Pvector coordinates of ship's vertex (15,0)
+  triangle[1] = new PVector(((shipCoord.x)-15)+7.5, ((shipCoord.y)-15)+15); //Pvector coordinates of ship's vertex (7.5,15) half way between two pvectors
+  triangle[2] = new PVector(((shipCoord.x)-15)+0, ((shipCoord.y)-15)+30); //Pvector coordinates of ship's vertex (0,30)
+  triangle[3] = new PVector(((shipCoord.x)-15)+7.5, ((shipCoord.y)-15)+25); //Pvector coordinates of ship's vertex (7.5,25) half way between two pvectors
+  triangle[4] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+20); //Pvector coordinates of ship's vertex (15,20)
+  triangle[5] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+25); //Pvector coordinates of ship's vertex (22.5,25) half way between two pvectors
+  triangle[6] = new PVector(((shipCoord.x)-15)+30, ((shipCoord.y)-15)+30); //Pvector coordinates of ship's vertex (30,30)
+  triangle[7] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+15); //Pvector coordinates of ship's vertex (22.5,15) half way between two pvectors
+  
+  //Tests each asteroid
+  for (int d = 0; d< astroNums; d++) { 
+    //For each asteroid, each point of the ship is tested for collision
     if (dist(triangle[0].x, triangle[0].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[1].x, triangle[1].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[2].x, triangle[2].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
@@ -205,18 +208,18 @@ void asteroidCollisionDetection() {
 
 
 void missileCollisionDetection() {
-  for (int d = 0; d< astroNums; d++) {
-    for (int i = 0; i<missiles.size(); i++) {
-      Missile m = missiles.get(i);
-      stroke(255);
-      point(m.x, m.y);
-      if (dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) {
-        fill(0, 0, 255);
-        ellipse(200, 200, 100, 100);
-        astroids[d].z = 1;
-      }
-    }
-  }
+//  for (int d = 0; d< astroNums; d++) { //Tests each asteroid
+//    for (int i = 0; i<missiles.size(); i++) { //Tests each missile against each asteroid
+//      Missile m = missiles.get(i);
+//      stroke(255);
+//      point(m.x, m.y);
+//     if (dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) {
+//        fill(0, 0, 255);
+//        ellipse(200, 200, 100, 100);
+//        astroids[d].z = 1; //Removes asteroid
+//      }
+//    }
+//  }
 }
 
 
