@@ -59,7 +59,7 @@ void moveShip() {
 
   if (sDOWN) {
     speed -= 0.1;
-    direction.x = cos(rotated+radians(270))*(speed); //<>//
+    direction.x = cos(rotated+radians(270))*(speed);
     direction.y = sin(rotated+radians(270))*(speed);
   }
 
@@ -178,7 +178,7 @@ void drawAstroids() {
   }
 }
 
-void collisionDetection() {
+void asteroidCollisionDetection() {
   triangle[0] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+0);
   triangle[1] = new PVector(((shipCoord.x)-15)+7.5, ((shipCoord.y)-15)+15);
   triangle[2] = new PVector(((shipCoord.x)-15)+0, ((shipCoord.y)-15)+30);
@@ -199,19 +199,27 @@ void collisionDetection() {
       fill(0, 255, 0);
       ellipse(100, 100, 100, 100);
       alive=false;
-      for (int i = 0; i<missiles.size(); i++) {
-        Missile m = missiles.get(i);
-        stroke(255);
-        point(m.x, m.y);
-        if (dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) {
-          fill(0, 0, 255);
-          ellipse(200, 200, 100, 100);
-          astroids[d].z = 1;
-        }
+    }
+  }
+}
+
+
+void missileCollisionDetection() {
+  for (int d = 0; d< astroNums; d++) {
+    for (int i = 0; i<missiles.size(); i++) {
+      Missile m = missiles.get(i);
+      stroke(255);
+      point(m.x, m.y);
+      if (dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) {
+        fill(0, 0, 255);
+        ellipse(200, 200, 100, 100);
+        astroids[d].z = 1;
       }
     }
   }
 }
+
+
 
 
 void draw() {
@@ -220,23 +228,24 @@ void draw() {
   pushMatrix();
   translate(shipCoord.x, shipCoord.y);
   draw_missiles();
+  missileCollisionDetection();
   popMatrix();
 
   pushMatrix();
   translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen. 
   rotate(rotated);
   shape(ship, -ship.width/2, -ship.height/2); //Makes the ship at the centre of the screen.
+  asteroidCollisionDetection();
   if (rotated >=TWO_PI) rotated = 0;
   if (rotated<0) rotated = TWO_PI;
   popMatrix(); 
 
   //might be worth checking to see if you are still alive first
   moveShip();
-  collisionDetection();
   // draw ship - call shap(..) if Pshape
   // report if game over or won
   drawAstroids();
-  // draw score //<>//
+  // draw score
 }
 
 void keyPressed() {
