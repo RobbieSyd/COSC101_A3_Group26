@@ -191,21 +191,20 @@ void asteroidCollisionDetection() {
   //Tests each asteroid
   for (int d = 0; d< astroNums; d++) { 
     //For each asteroid, each point of the ship is tested for collision
-    if (dist(triangle[0].x, triangle[0].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
+    if ((dist(triangle[0].x, triangle[0].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[1].x, triangle[1].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[2].x, triangle[2].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[3].x, triangle[3].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[4].x, triangle[4].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[5].x, triangle[5].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[6].x, triangle[6].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
-      dist(triangle[7].x, triangle[7].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ) {
+      dist(triangle[7].x, triangle[7].y, astroids[d].x, astroids[d].y)<=astroidSize/2) && astroids[d].z == 0) {
       fill(0, 255, 0);
       ellipse(100, 100, 100, 100);
       alive=false;
     }
   }
 }
-
 
 void missileCollisionDetection() {
 //  for (int d = 0; d< astroNums; d++) { //Tests each asteroid
