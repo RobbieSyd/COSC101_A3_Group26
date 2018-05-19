@@ -14,7 +14,7 @@ float astroidSize = 70;
 float rotated = 0.0;
 int initalised = 0; 
 PShape ship; // don't have to use pshape - can use image
-int astroNums=20;
+int astroNums = 10;
 PVector[] astroids = new PVector[astroNums];
 PVector[] astroDirect = new PVector[astroNums]; 
 float speed = 0; 
@@ -29,6 +29,7 @@ int score=0;
 boolean alive=true;
 ArrayList<Missile> missiles = new ArrayList<Missile>();
 PVector[] triangle = new PVector[8];
+int scoreCount = 0;
 
 
 void setup() {
@@ -95,7 +96,7 @@ void moveShip() {
 }
 
 void ship() {
-
+  noCursor();
   ship = createShape();
   ship.beginShape();
   ship.fill(0);
@@ -107,6 +108,7 @@ void ship() {
   ship.vertex(30, 30);
   //ship.translate(-15,-15);
   ship.endShape(CLOSE);
+  
 }
 
 class Missile {
@@ -170,7 +172,7 @@ void drawAstroids() {
         if (astroids[d].y <= 0) {//brings the astroid back if it goes off screen. 
           astroids[d].y += height;
         }
-
+        stroke(209);
         fill(209);// colour of astroid
         ellipse(astroids[d].x, astroids[d].y, astroidSize, astroidSize); //prints the astroid on the screen
       }
@@ -199,54 +201,84 @@ void asteroidCollisionDetection() {
       dist(triangle[5].x, triangle[5].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[6].x, triangle[6].y, astroids[d].x, astroids[d].y)<=astroidSize/2 ||
       dist(triangle[7].x, triangle[7].y, astroids[d].x, astroids[d].y)<=astroidSize/2) && astroids[d].z == 0) {
-      fill(0, 255, 0);
-      ellipse(100, 100, 100, 100);
       alive=false;
     }
   }
 }
 
 void missileCollisionDetection() {
-//  for (int d = 0; d< astroNums; d++) { //Tests each asteroid
-//    for (int i = 0; i<missiles.size(); i++) { //Tests each missile against each asteroid
-//      Missile m = missiles.get(i);
-//      stroke(255);
-//      point(m.x, m.y);
-//     if (dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) {
-//        fill(0, 0, 255);
-//        ellipse(200, 200, 100, 100);
-//        astroids[d].z = 1; //Removes asteroid
-//      }
-//    }
-//  }
+  for (int d = 0; d< astroNums; d++) { //Tests each asteroid
+    for (int i = 0; i<missiles.size(); i++) { //Tests each missile against each asteroid
+      Missile m = missiles.get(i);
+      stroke(255);
+      point(m.x, m.y);
+     if ((dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) && astroids[d].z == 0) {
+        astroids[d].z = 1; //Removes asteroid
+        m.x = 10000; //Takes collided missiles off screen
+        m.y = 10000; //Takes collided missiles off screen
+        scoreCount += 1; //Increments everytime an astroid is destroyed
+      }
+    }
+  }
 }
 
-
+void gameState() {
+  
+  //Game Screen
+  if (alive==true) {
+   fill(0,255,0);
+   stroke(0,255,0);
+   textSize(20);
+   text("asteroids: " + scoreCount + "/" + astroNums, 50,50);
+  }
+  
+   //GameOver Screen
+   if (alive==false){
+   background(0);
+   fill(255);
+   textSize(100);
+   text("GAME OVER", 200,400);
+   noLoop();
+   cursor();
+  }
+  
+  //Completed Screen
+  if (scoreCount == astroNums){
+   background(0);
+   fill(255);
+   textSize(80);
+   text("Completed!", 260,350);
+   text("Well Done!", 280,450);
+   noLoop();
+   cursor();
+  }
+  
+}
 
 
 void draw() {
   background(0);  
 
-  pushMatrix();
-  translate(shipCoord.x, shipCoord.y);
-  draw_missiles();
-  missileCollisionDetection();
-  popMatrix();
 
   pushMatrix();
-  translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen. 
+  translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen.
   rotate(rotated);
   shape(ship, -ship.width/2, -ship.height/2); //Makes the ship at the centre of the screen.
   if (rotated >=TWO_PI) rotated = 0;
   if (rotated<0) rotated = TWO_PI;
   popMatrix(); 
+  draw_missiles();
   asteroidCollisionDetection();
+  missileCollisionDetection();
   //might be worth checking to see if you are still alive first
   moveShip();
   // draw ship - call shap(..) if Pshape
   // report if game over or won
   drawAstroids();
   // draw score
+  gameState(); //What state the game is in
+  
+   
 }
 
 void keyPressed() {
@@ -266,7 +298,7 @@ void keyPressed() {
   }
   if (key == ' ') {
     //fire a shot
-    missiles.add(new Missile(0, 0, rotated));  //Adds a missile to the arraylist missiles. 0,-10 makes them appear from the point of the ship. Rotated is the angle they are supposed to fire.
+    missiles.add(new Missile(shipCoord.x, shipCoord.y, rotated));  //Adds a missile to the arraylist missiles. 0,-10 makes them appear from the point of the ship. Rotated is the angle they are supposed to fire.
   }
 }
 
