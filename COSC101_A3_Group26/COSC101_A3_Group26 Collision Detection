@@ -96,7 +96,6 @@ void moveShip() {
 }
 
 void ship() {
-  noCursor();
   ship = createShape();
   ship.beginShape();
   ship.fill(0);
@@ -226,6 +225,7 @@ void gameState() {
   
   //Game Screen
   if (alive==true) {
+   noCursor();
    fill(0,255,0);
    stroke(0,255,0);
    textSize(20);
