@@ -32,7 +32,7 @@ int score=0;
 boolean alive=true;
 ArrayList<Missile> missiles = new ArrayList<Missile>();
 PVector[] triangle = new PVector[8]; //Ship pvectors used in collision detection
-float[] astroidSizeArray = new float[astroNums];
+float[] astroidSizeArray = new float[astroNums]; //Stores each asteroid's size
 int scoreCount = 0; //Increments score
 
 
@@ -187,7 +187,8 @@ void buildAstroids(){
   //populates the PVector astroids[] and PVector astroDirect[]
    for (int a =0; a < astroNums; a++) { 
       asteroid[a] = loadImage("asteroid.png");
-      astroidSizeArray[a] = random(30,80);
+      astroidSizeArray[a] = random(30,80); //Randomises size of asteriod between 30-80 pixels
+      asteroid[a].resize(int(astroidSizeArray[a]), int(astroidSizeArray[a])); //Resizes asteriod image to particular asteriod size
       astroids[a] = new PVector(0, 0, 0); // places random generated numbers into PVector
       astroids[a].x = random(width/4); //generates random x value for astroid starting point
       astroids[a].y = random(height); //generates random y value for astroid starting point
@@ -223,11 +224,7 @@ void drawAstroids() {
         if (astroids[d].y <= 0) {//brings the astroid back if it goes off screen. 
           astroids[d].y += height;
         }
-       
-        int astroidResize = int(astroidSizeArray[d]);
-        println(astroidResize);
-        asteroid[d].resize(astroidResize, astroidResize);
-        image(asteroid[d], astroids[d].x-(astroidSizeArray[d]/2), astroids[d].y-(astroidSizeArray[d]/2));
+        image(asteroid[d], astroids[d].x-(astroidSizeArray[d]/2), astroids[d].y-(astroidSizeArray[d]/2)); //Draws asteriod
       }
     }
   }
