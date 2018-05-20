@@ -12,7 +12,8 @@
 
 float astroidSize = 70; 
 float rotated = 0.0;
-int initalised = 0; 
+int initalised = 0;
+PImage bg; 
 PShape ship;
 PShape thrust;// don't have to use pshape - can use image
 int astroNums = 10;
@@ -35,6 +36,8 @@ int scoreCount = 0;
 
 void setup() {
   size(1000, 800);
+  bg = loadImage("SpaceBackground.jpg");
+  bg.resize(1000,800); 
   shipCoord = new PVector(width/2, height/2);
   direction = new PVector(0, 0); 
   ship();
@@ -275,7 +278,7 @@ void gameState() {
 
 
 void draw() {
-  background(0);  
+  background(bg);  
 
 
   pushMatrix();
