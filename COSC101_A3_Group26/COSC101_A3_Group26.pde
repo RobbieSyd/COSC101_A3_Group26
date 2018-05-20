@@ -183,11 +183,10 @@ void draw(){
   moveShip();
   collisionDetection();
   drawShots();
-  // draw ship - call shap(..) if Pshape
   // report if game over or won
   drawAstroids();
-  // draw score //<>//
-}
+  // draw score
+} //<>//
 
 void keyPressed() {
   if (key == CODED) {
