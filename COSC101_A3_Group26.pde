@@ -15,7 +15,8 @@ float rotated = 0.0;
 int initalised = 0;
 PImage bg; 
 PShape ship;
-PShape thrust;// don't have to use pshape - can use image
+PShape fowardThrust;
+PShape reverseThrust; 
 int astroNums = 10;
 PVector[] astroids = new PVector[astroNums];
 PVector[] astroDirect = new PVector[astroNums]; 
@@ -41,7 +42,8 @@ void setup() {
   shipCoord = new PVector(width/2, height/2);
   direction = new PVector(0, 0); 
   ship();
-  buildThrust();// Creates PShape of ship 
+  buildFowardThrust();
+  buildReverseThrust(); 
   drawAstroids();
   initalised = 1;// sets initalised variable to 1.
 }
@@ -61,13 +63,14 @@ void moveShip() {
     speed += 0.1; 
     direction.x = cos(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
     direction.y = sin(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
-    thrust();
+    fowardThrust();
   }
 
   if (sDOWN) {
     speed -= 0.1;
     direction.x = cos(rotated+radians(270))*(speed);
     direction.y = sin(rotated+radians(270))*(speed);
+    reverseThrust(); 
   }
 
   if (sRIGHT) {
@@ -138,24 +141,43 @@ void draw_missiles() {
     //print(missiles);
   }
 }
-void buildThrust() { 
-  thrust = createShape();  
-  thrust.beginShape(TRIANGLES);
-  thrust. fill(255, 0, 0);
-  thrust.vertex(30, 75);
-  thrust.vertex(40, 20);
-  thrust.vertex(50, 75);
-  thrust.endShape();
+void buildFowardThrust() { 
+  fowardThrust = createShape();  
+  fowardThrust.beginShape(TRIANGLES);
+  fowardThrust. fill(122, 186, 221);
+  fowardThrust.vertex(30, 75);
+  fowardThrust.vertex(40, 20);
+  fowardThrust.vertex(50, 75);
+  fowardThrust.endShape();
 }
 
-void thrust() {
+void buildReverseThrust(){
+  reverseThrust = createShape();  
+  reverseThrust.beginShape(TRIANGLES);
+  reverseThrust. fill(122, 186, 221);
+  reverseThrust.vertex(7.5, -20);
+  reverseThrust.vertex(2.5, -60);
+  reverseThrust.vertex(12.5, -60);
+  reverseThrust.vertex(22.5, -20);
+  reverseThrust.vertex(17.5, -60);
+  reverseThrust.vertex(27.5, -60);
+  reverseThrust.endShape(); }
+  
+void fowardThrust() {
   pushMatrix();
   translate(shipCoord.x, shipCoord.y);
   rotate(rotated);
-  shape(thrust, -ship.width/2 - 25, ship.height/2 -25) ; 
+  shape(fowardThrust, -ship.width/2 - 25, ship.height/2 -25) ; 
   popMatrix();
 }
-
+void reverseThrust(){
+  pushMatrix();
+  translate(shipCoord.x, shipCoord.y);
+  rotate(rotated);
+  shape(reverseThrust, -ship.width/2, ship.height/2) ; 
+  popMatrix();
+}
+  
 void drawAstroids() {
   if (initalised == 0) { //initalised variable added to ensure that the PVectors arrays are only populated once.  
     //populates the PVector astroids[] and PVector astroDirect[]
@@ -279,8 +301,6 @@ void gameState() {
 
 void draw() {
   background(bg);  
-
-
   pushMatrix();
   translate(shipCoord.x, shipCoord.y); // Moves origin to the centre of the screen.
   rotate(rotated);
