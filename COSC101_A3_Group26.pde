@@ -13,7 +13,8 @@
 float astroidSize = 70; 
 float rotated = 0.0;
 int initalised = 0; 
-PShape ship; // don't have to use pshape - can use image
+PShape ship;
+PShape thrust;// don't have to use pshape - can use image
 int astroNums = 10;
 PVector[] astroids = new PVector[astroNums];
 PVector[] astroDirect = new PVector[astroNums]; 
@@ -36,7 +37,8 @@ void setup() {
   size(1000, 800);
   shipCoord = new PVector(width/2, height/2);
   direction = new PVector(0, 0); 
-  ship();// Creates PShape of ship 
+  ship();
+  buildThrust();// Creates PShape of ship 
   drawAstroids();
   initalised = 1;// sets initalised variable to 1.
 }
@@ -56,8 +58,7 @@ void moveShip() {
     speed += 0.1; 
     direction.x = cos(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
     direction.y = sin(rotated+radians(270))*(speed);  //+radians(270) to make sure the ship is facing upwards/moves in the right direction
-      
-    
+    thrust();
   }
 
   if (sDOWN) {
@@ -109,7 +110,6 @@ void ship() {
   ship.vertex(30, 30);
   //ship.translate(-15,-15);
   ship.endShape(CLOSE);
-  
 }
 
 class Missile {
@@ -134,6 +134,23 @@ void draw_missiles() {
     //}
     //print(missiles);
   }
+}
+void buildThrust() { 
+  thrust = createShape();  
+  thrust.beginShape(TRIANGLES);
+  thrust. fill(255, 0, 0);
+  thrust.vertex(30, 75);
+  thrust.vertex(40, 20);
+  thrust.vertex(50, 75);
+  thrust.endShape();
+}
+
+void thrust() {
+  pushMatrix();
+  translate(shipCoord.x, shipCoord.y);
+  rotate(rotated);
+  shape(thrust, -ship.width/2 - 25, ship.height/2 -25) ; 
+  popMatrix();
 }
 
 void drawAstroids() {
@@ -190,7 +207,7 @@ void asteroidCollisionDetection() {
   triangle[5] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+25); //Pvector coordinates of ship's vertex (22.5,25) half way between two pvectors
   triangle[6] = new PVector(((shipCoord.x)-15)+30, ((shipCoord.y)-15)+30); //Pvector coordinates of ship's vertex (30,30)
   triangle[7] = new PVector(((shipCoord.x)-15)+22.5, ((shipCoord.y)-15)+15); //Pvector coordinates of ship's vertex (22.5,15) half way between two pvectors
-  
+
   //Tests each asteroid
   for (int d = 0; d< astroNums; d++) { 
     //For each asteroid, each point of the ship is tested for collision
@@ -213,7 +230,7 @@ void missileCollisionDetection() {
       Missile m = missiles.get(i);
       stroke(255);
       point(m.x, m.y);
-     if ((dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) && astroids[d].z == 0) {
+      if ((dist(m.x, m.y, astroids[d].x, astroids[d].y)<=astroidSize/2) && astroids[d].z == 0) {
         astroids[d].z = 1; //Removes asteroid
         m.x = 10000; //Takes collided missiles off screen
         m.y = 10000; //Takes collided missiles off screen
@@ -224,37 +241,36 @@ void missileCollisionDetection() {
 }
 
 void gameState() {
-  
+
   //Game Screen
   if (alive==true) {
-   noCursor();
-   fill(0,255,0);
-   stroke(0,255,0);
-   textSize(20);
-   text("asteroids: " + scoreCount + "/" + astroNums, 50,50);
+    noCursor();
+    fill(0, 255, 0);
+    stroke(0, 255, 0);
+    textSize(20);
+    text("asteroids: " + scoreCount + "/" + astroNums, 50, 50);
   }
-  
-   //GameOver Screen
-   if (alive==false){
-   background(0);
-   fill(255);
-   textSize(100);
-   text("GAME OVER", 200,400);
-   noLoop();
-   cursor();
+
+  //GameOver Screen
+  if (alive==false) {
+    background(0);
+    fill(255);
+    textSize(100);
+    text("GAME OVER", 200, 400);
+    noLoop();
+    cursor();
   }
-  
+
   //Completed Screen
-  if (scoreCount == astroNums){
-   background(0);
-   fill(255);
-   textSize(80);
-   text("Completed!", 260,350);
-   text("Well Done!", 280,450);
-   noLoop();
-   cursor();
+  if (scoreCount == astroNums) {
+    background(0);
+    fill(255);
+    textSize(80);
+    text("Completed!", 260, 350);
+    text("Well Done!", 280, 450);
+    noLoop();
+    cursor();
   }
-  
 }
 
 
@@ -279,8 +295,6 @@ void draw() {
   drawAstroids();
   // draw score
   gameState(); //What state the game is in
-  
-   
 }
 
 void keyPressed() {
