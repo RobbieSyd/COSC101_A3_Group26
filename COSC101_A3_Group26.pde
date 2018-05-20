@@ -37,17 +37,22 @@ int scoreCount = 0;
 
 void setup() {
   size(1000, 800);
-  bg = loadImage("SpaceBackground.jpg");
-  bg.resize(1000,800); 
-  shipCoord = new PVector(width/2, height/2);
-  direction = new PVector(0, 0); 
   ship();
   buildFowardThrust();
   buildReverseThrust(); 
-  drawAstroids();
-  initalised = 1;// sets initalised variable to 1.
+  reset();
 }
 
+void reset(){ 
+  bg = loadImage("SpaceBackground.jpg");
+  bg.resize(1000,800); 
+  alive = true; 
+  shipCoord = new PVector(width/2, height/2);
+  direction = new PVector(0, 0);
+  buildAstroids();
+  scoreCount = 0; 
+  
+}
 /**************************************************************
  * Function: myFunction()
  * Parameters: None ( could be integer(x), integer(y) or String(myStr))
@@ -177,11 +182,9 @@ void reverseThrust(){
   shape(reverseThrust, -ship.width/2, ship.height/2) ; 
   popMatrix();
 }
-  
-void drawAstroids() {
-  if (initalised == 0) { //initalised variable added to ensure that the PVectors arrays are only populated once.  
-    //populates the PVector astroids[] and PVector astroDirect[]
-    for (int a =0; a < astroNums; a++) { 
+void buildAstroids(){
+  //populates the PVector astroids[] and PVector astroDirect[]
+   for (int a =0; a < astroNums; a++) { 
       astroids[a] = new PVector(0, 0, 0); // places random generated numbers into PVector
       astroids[a].x = random(width/4); //generates random x value for astroid starting point
       astroids[a].y = random(height); //generates random y value for astroid starting point
@@ -195,8 +198,11 @@ void drawAstroids() {
 
       astroids[a].z = 0; // Boolean value to indicate that the astroid has not been exploded.
     }
-  } else {
-    // Adds the Pvectors astroids[] and astroDirect[]
+  
+  
+}
+void drawAstroids() {  
+  // Adds the Pvectors astroids[] and astroDirect[]
     for (int d = 0; d< astroNums; d++) {  
 
       if (astroids[d].z == 0) {     // checks to see if astroid has exploded or not. 0 = Alive, 1 = Exploded
@@ -221,7 +227,7 @@ void drawAstroids() {
       }
     }
   }
-}
+
 
 void asteroidCollisionDetection() {
   triangle[0] = new PVector(((shipCoord.x)-15)+15, ((shipCoord.y)-15)+0); //Pvector coordinates of ship's vertex (15,0)
@@ -282,7 +288,8 @@ void gameState() {
     fill(255);
     textSize(100);
     text("GAME OVER", 200, 400);
-    noLoop();
+    textSize(50); 
+    text(" Press spacebar for new game", 130, 600 ); 
     cursor();
   }
 
@@ -293,7 +300,8 @@ void gameState() {
     textSize(80);
     text("Completed!", 260, 350);
     text("Well Done!", 280, 450);
-    noLoop();
+    textSize(50); 
+    text(" Press spacebar for new game", 130, 600 ); 
     cursor();
   }
 }
@@ -338,6 +346,13 @@ void keyPressed() {
   if (key == ' ') {
     //fire a shot
     missiles.add(new Missile(shipCoord.x, shipCoord.y, rotated));  //Adds a missile to the arraylist missiles. 0,-10 makes them appear from the point of the ship. Rotated is the angle they are supposed to fire.
+  }
+  if (key == ' ' && alive == false){
+    reset(); 
+  }
+  
+  if (key == ' ' && scoreCount == astroNums){
+    reset(); 
   }
 }
 
