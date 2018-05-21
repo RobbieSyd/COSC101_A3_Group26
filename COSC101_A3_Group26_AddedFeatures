@@ -9,7 +9,7 @@
  * Notes: If any third party items are use they need to be credited (don't use anything with copyright - unless you have permission)
  * ...
  **************************************************************/
-int astroNums = 20;
+int astroNums = 5;
 float astroidSize; 
 float rotated = 0.0;
 int initalised = 0;
@@ -34,6 +34,7 @@ ArrayList<Missile> missiles = new ArrayList<Missile>();
 PVector[] triangle = new PVector[8]; //Ship pvectors used in collision detection
 float[] astroidSizeArray = new float[astroNums]; //Stores each asteroid's size
 int scoreCount = 0; //Increments score
+int level = 0;
 
 
 void setup() {
@@ -52,6 +53,7 @@ void reset(){
   direction = new PVector(0, 0);
   buildAstroids();
   scoreCount = 0; 
+  level = 0;
   
 }
 /**************************************************************
@@ -281,6 +283,7 @@ void gameState() {
     stroke(0, 255, 0);
     textSize(20);
     text("asteroids: " + scoreCount + "/" + astroNums, 50, 50);
+    text("Level :" + (level+1), 850, 50);
   }
 
   //GameOver Screen
@@ -290,20 +293,21 @@ void gameState() {
     textSize(100);
     text("GAME OVER", 200, 400);
     textSize(50); 
+    text(" You made it to Level: " + (level + 1), 200, 500 );
     text(" Press spacebar for new game", 130, 600 ); 
     cursor();
   }
 
   //Completed Screen
   if (scoreCount == astroNums) {
-    background(0);
-    fill(255);
-    textSize(80);
-    text("Completed!", 260, 350);
-    text("Well Done!", 280, 450);
-    textSize(50); 
-    text(" Press spacebar for new game", 130, 600 ); 
-    cursor();
+    level +=1;
+     for (int d = 0; d< astroNums; d++) {  
+      astroids[d].z = 0;
+      astroDirect[d].x = (random(-2,2)*level);
+      astroDirect[d].y = (random(-2,2)*level);
+      scoreCount=0;
+  
+}
   }
 }
 
