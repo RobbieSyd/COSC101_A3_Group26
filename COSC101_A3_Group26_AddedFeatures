@@ -16,6 +16,8 @@ int initalised = 0;
 PImage bg;
 PImage[] asteroid = new PImage[astroNums]; //https://4vector.com/free-vector/moon-clip-art-111052
 PShape ship;
+Pshape saucer;
+float saucerX, saucerY, saucerSpeed;
 PShape fowardThrust;
 PShape reverseThrust; 
 PVector[] astroids = new PVector[astroNums];
@@ -40,6 +42,7 @@ int level = 0;
 void setup() {
   size(1000, 800);
   ship();
+  saucer();
   buildFowardThrust();
   buildReverseThrust(); 
   reset();
@@ -321,9 +324,11 @@ void draw() {
   if (rotated >=TWO_PI) rotated = 0;
   if (rotated<0) rotated = TWO_PI;
   popMatrix(); 
+  drawSaucer();
   draw_missiles();
   asteroidCollisionDetection();
   missileCollisionDetection();
+  saucerCollisionDetect();
   //might be worth checking to see if you are still alive first
   moveShip();
   // draw ship - call shap(..) if Pshape
@@ -376,4 +381,49 @@ void keyReleased() {
       sLEFT=false;
     }
   }
+}
+
+void saucerCollisionDetect() {
+  for(int i=0; i < missiles.size(); i++) {
+    Missile m = missiles.get(i);
+    //Check to see if missile hits saucer
+    if(m.x >= saucerX && m.x <= saucerX+30 &&  //bounding box collision detection
+       m.y >= saucerY && m.y <= saucerY+60) {
+         saucerPresent = false;  //Destroys the saucer
+         m.x = 10000;  //Removes the shot
+         m.y = 10000;
+     }
+    //Check to see if saucer hits ship (Currently not working)
+    
+    if(saucerX >= shipCoord.x && saucerX <= shipCoord.x+30 &&
+       saucerY >= shipCoord.y && saucerY <= shipCoord.y+30) {
+         alive = false; 
+       }
+  }
+}
+
+void drawSaucer() {
+  if(saucerPresent == false) {
+    saucerPresent = true;
+    saucerX = random(width);    // Generates a random xy position for the sacuer on the screen.
+    saucerY = random(height-30); //The -30 ensures the whole shape remains on the screen.
+    saucerSpeed = random(-4,4);  //The speed of the saucer
+    if(saucerSpeed <= 0 && saucerSpeed >= -1) {  //If saucerSpeed is between 0 and -1, speed it up.
+      saucerSpeed -= 1;
+    }
+    if(saucerSpeed >= 0 && saucerSpeed <= 1) {  //If saucerSpeed is between 0 and 1, speed it up.
+      saucerSpeed += 1;
+    }
+
+  }
+  if(saucerPresent == true) {
+    saucerX += saucerSpeed;
+    shape(saucer, saucerX, saucerY);
+  }
+  if(saucerX >= width) {
+    saucerX -= width;
+  }
+    if(saucerX <= 0) {
+      saucerX += width;
+    }
 }
