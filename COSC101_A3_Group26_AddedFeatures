@@ -397,21 +397,23 @@ void keyReleased() {
 }
 
 void saucerCollisionDetect() {
-  for(int i=0; i < missiles.size(); i++) {
-    Missile m = missiles.get(i);
-    //Check to see if missile hits saucer
-    if(m.x >= saucerX && m.x <= saucerX+30 &&  //bounding box collision detection
-       m.y >= saucerY && m.y <= saucerY+60) {
-         saucerPresent = false;  //Destroys the saucer
-         m.x = 10000;  //Removes the shot
-         m.y = 10000;
-     }
-    //Check to see if saucer hits ship (Currently not working)
-    
-    if(saucerX >= shipCoord.x && saucerX <= shipCoord.x+30 &&
-       saucerY >= shipCoord.y && saucerY <= shipCoord.y+30) {
-         alive = false; 
-       }
+  //Saucer vertexes
+  int x1 = int(saucerX)+30;
+  int y1 = int(saucerY)+0;
+  int x2 = int(saucerX)+0;
+  int y2 = int(saucerY)+30;
+  int x3 = int(saucerX)+30;
+  int y3 = int(saucerY)+60;
+  for (int i=0; i<8; i++) {
+  //saucer triangle against ship points
+    float areaOrig =abs( (x2-x1)*(y3-y1) - (x3-x1)*(y2-y1) );
+    float area1 =abs( (x1-triangle[i].x)*(y2-triangle[i].y) - (x2-triangle[i].x)*(y1-triangle[i].y) );
+    float area2 =abs( (x2-triangle[i].x)*(y3-triangle[i].y) - (x3-triangle[i].x)*(y2-triangle[i].y) );
+    float area3 =abs( (x3-triangle[i].x)*(y1-triangle[i].y) - (x1-triangle[i].x)*(y3-triangle[i].y) );
+    triangle(30,0,0,30,30,60);
+    if (area1 + area2 + area3 == areaOrig) {
+      alive = false;
+    }
   }
 }
 
