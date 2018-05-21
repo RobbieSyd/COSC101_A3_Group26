@@ -16,7 +16,7 @@ int initalised = 0;
 PImage bg;
 PImage[] asteroid = new PImage[astroNums]; //https://4vector.com/free-vector/moon-clip-art-111052
 PShape ship;
-Pshape saucer;
+PShape saucer;
 float saucerX, saucerY, saucerSpeed;
 PShape fowardThrust;
 PShape reverseThrust; 
@@ -37,6 +37,7 @@ PVector[] triangle = new PVector[8]; //Ship pvectors used in collision detection
 float[] astroidSizeArray = new float[astroNums]; //Stores each asteroid's size
 int scoreCount = 0; //Increments score
 int level = 0;
+boolean saucerPresent = false;
 
 
 void setup() {
@@ -127,6 +128,18 @@ void ship() {
   ship.vertex(30, 30);
   //ship.translate(-15,-15);
   ship.endShape(CLOSE);
+}
+
+void saucer() {
+  saucer = createShape();
+  saucer.beginShape();
+  saucer.stroke(255);
+  saucer.fill(0);
+  saucer.vertex(30,0);
+  saucer.vertex(0,30);
+  saucer.vertex(30,60);
+  saucer.vertex(30,0);
+  saucer.endShape(CLOSE);
 }
 
 class Missile {
